@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "outFile": "../compiled-typescript.js"
+    },
+    "files": [
+        "javascript-declarations.ts",
+        "playState.ts",
+        "Game.ts"
+    ]
+}
