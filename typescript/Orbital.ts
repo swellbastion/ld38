@@ -1,12 +1,12 @@
 class Orbital {
-    position;
+    body = {position: [], angle: 0};
 
-    constructor(public rotation, public outwardDistance) {
-        this.setRotation(this.rotation);
+    constructor(rotation, public outwardDistance) {
+        this.setRotation(rotation);
     }
 
     setRotation(rotation) {
-        this.rotation = rotation;
+        this.body.angle = rotation;
         this.setPostionFromRotation();
     }
 
@@ -15,9 +15,9 @@ class Orbital {
               y = game.planetTop.y - this.outwardDistance,
               centerX = game.width / 2,
               centerY = game.height / 2;
-        this.position = {
-            x: Math.cos(this.rotation) * (x - centerX) - Math.sin(this.rotation) * (y - centerY) + centerX,
-            y: Math.sin(this.rotation) * (x - centerX) + Math.cos(this.rotation) * (y - centerY) + centerY
-        };
+        this.body.position = [
+            Math.cos(this.body.angle) * (x - centerX) - Math.sin(this.body.angle) * (y - centerY) + centerX,
+            Math.sin(this.body.angle) * (x - centerX) + Math.cos(this.body.angle) * (y - centerY) + centerY
+        ];
     }
 }

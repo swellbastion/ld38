@@ -8,6 +8,7 @@ class Game {
     levelObjects = {blocks: [], spikes: []};
     player;
     controls;
+    currentLevel;
 
     constructor() {
         this.phaser.state.add('startScreen', startScreenState);

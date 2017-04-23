@@ -10,8 +10,8 @@
         "playState.ts",
         "GameObject.ts",
         "Orbital.ts",
-        "Block.ts",
         "Game.ts",
+        "Block.ts",
         "Controls.ts",
         "Player.ts"
     ]

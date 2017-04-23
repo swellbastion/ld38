@@ -10,7 +10,8 @@ class Player extends GameObject {
 
         this.body = new p2.Body({
             mass: 5, 
-            position: [game.planetTop.x, game.planetTop.y - height / 2]
+            position: [game.planetTop.x, game.planetTop.y - height / 2],
+            fixedX: true
         });
         this.sprite = game.phaser.add.sprite(this.body.position.x, this.body.position.y, 'player');
         this.sprite.anchor.set(.5, .5);

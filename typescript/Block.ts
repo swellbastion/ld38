@@ -6,7 +6,7 @@ class Block extends Orbital {
         super(rotation, outwardDistance + 8);
         const height = 16;
 
-        this.body = new p2.Body({position: [this.position.x, this.position.y]});
+        this.body = new p2.Body({position: [this.body.position[0], this.body.position[1]]});
         this.body.addShape(new p2.Box({width: width, height: height}));
         this.body.angle = rotation;
         game.physicsWorld.addBody(this.body);
@@ -17,6 +17,8 @@ class Block extends Orbital {
     }
 
     update() {
-        
+        this.setRotation(this.body.angle + .01);
+        this.sprite.position = {x: this.body.position[0], y: this.body.position[1]};
+        this.sprite.rotation = this.body.angle;
     }
 }

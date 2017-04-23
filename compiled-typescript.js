@@ -41,6 +41,10 @@ var playState = {
     update: function () {
         game.physicsWorld.step(1 / 60);
         game.player.update();
+        for (var _i = 0, _a = game.levelObjects.blocks; _i < _a.length; _i++) {
+            var block = _a[_i];
+            block.update();
+        }
     }
 };
 var GameObject = (function () {
@@ -56,42 +60,23 @@ var GameObject = (function () {
 }());
 var Orbital = (function () {
     function Orbital(rotation, outwardDistance) {
-        this.rotation = rotation;
         this.outwardDistance = outwardDistance;
-        this.setRotation(this.rotation);
+        this.body = { position: [], angle: 0 };
+        this.setRotation(rotation);
     }
     Orbital.prototype.setRotation = function (rotation) {
-        this.rotation = rotation;
+        this.body.angle = rotation;
         this.setPostionFromRotation();
     };
     Orbital.prototype.setPostionFromRotation = function () {
         var x = game.width / 2, y = game.planetTop.y - this.outwardDistance, centerX = game.width / 2, centerY = game.height / 2;
-        this.position = {
-            x: Math.cos(this.rotation) * (x - centerX) - Math.sin(this.rotation) * (y - centerY) + centerX,
-            y: Math.sin(this.rotation) * (x - centerX) + Math.cos(this.rotation) * (y - centerY) + centerY
-        };
+        this.body.position = [
+            Math.cos(this.body.angle) * (x - centerX) - Math.sin(this.body.angle) * (y - centerY) + centerX,
+            Math.sin(this.body.angle) * (x - centerX) + Math.cos(this.body.angle) * (y - centerY) + centerY
+        ];
     };
     return Orbital;
 }());
-var Block = (function (_super) {
-    __extends(Block, _super);
-    function Block(rotation, outwardDistance, width) {
-        var _this = _super.call(this, rotation, outwardDistance + 8) || this;
-        var height = 16;
-        _this.body = new p2.Body({ position: [_this.position.x, _this.position.y] });
-        _this.body.addShape(new p2.Box({ width: width, height: height }));
-        _this.body.angle = rotation;
-        game.physicsWorld.addBody(_this.body);
-        _this.sprite = game.phaser.add.sprite(_this.body.position[0], _this.body.position[1], 'block');
-        _this.sprite.width = _this.body.shapes[0].width;
-        _this.sprite.rotation = rotation;
-        _this.sprite.anchor.set(.5, .5);
-        return _this;
-    }
-    Block.prototype.update = function () {
-    };
-    return Block;
-}(Orbital));
 var Game = (function () {
     function Game() {
         this.width = 640;
@@ -116,6 +101,28 @@ var Game = (function () {
     return Game;
 }());
 var game = new Game;
+var Block = (function (_super) {
+    __extends(Block, _super);
+    function Block(rotation, outwardDistance, width) {
+        var _this = _super.call(this, rotation, outwardDistance + 8) || this;
+        var height = 16;
+        _this.body = new p2.Body({ position: [_this.body.position[0], _this.body.position[1]] });
+        _this.body.addShape(new p2.Box({ width: width, height: height }));
+        _this.body.angle = rotation;
+        game.physicsWorld.addBody(_this.body);
+        _this.sprite = game.phaser.add.sprite(_this.body.position[0], _this.body.position[1], 'block');
+        _this.sprite.width = _this.body.shapes[0].width;
+        _this.sprite.rotation = rotation;
+        _this.sprite.anchor.set(.5, .5);
+        return _this;
+    }
+    Block.prototype.update = function () {
+        this.setRotation(this.body.angle + .01);
+        this.sprite.position = { x: this.body.position[0], y: this.body.position[1] };
+        this.sprite.rotation = this.body.angle;
+    };
+    return Block;
+}(Orbital));
 var Controls = (function () {
     function Controls() {
         var spacebar = game.phaser.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -131,7 +138,8 @@ var Player = (function (_super) {
         var width = 32;
         _this.body = new p2.Body({
             mass: 5,
-            position: [game.planetTop.x, game.planetTop.y - height / 2]
+            position: [game.planetTop.x, game.planetTop.y - height / 2],
+            fixedX: true
         });
         _this.sprite = game.phaser.add.sprite(_this.body.position.x, _this.body.position.y, 'player');
         _this.sprite.anchor.set(.5, .5);

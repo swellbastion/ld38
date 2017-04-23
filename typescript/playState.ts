@@ -16,5 +16,6 @@ const playState = {
     update() {
         game.physicsWorld.step(1/60);
         game.player.update();
+        for (const block of game.levelObjects.blocks) block.update();
     }
 };
