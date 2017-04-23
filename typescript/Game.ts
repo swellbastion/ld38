@@ -5,7 +5,7 @@ class Game {
     planetTop = {x: this.width / 2, y: this.height / 2 - this.planetRadius};
     phaser = new Phaser.Game(this.width, this.height);
     physicsWorld = new p2.World({gravity: [0, 1000]});
-    levelObjects = {blocks: [], nextLevelTriggers: []};
+    levelObjects = {blocks: [], nextLevelTriggers: [], spikes: []};
     player;
     controls;
     currentLevelNumber;
@@ -38,6 +38,10 @@ class Game {
         for (const trigger of levels[number].nextLevelTriggers) 
             this.levelObjects.nextLevelTriggers.push(
                 new NextLevelTrigger(trigger[0], trigger[1])
+            );
+        for (const spike of levels[number].spikes) 
+            this.levelObjects.spikes.push(
+                new Spikes(spike[0], spike[1], spike[2])
             );
     }
 

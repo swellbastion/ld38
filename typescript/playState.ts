@@ -5,6 +5,7 @@ const playState = {
         this.load.image('planet', 'images/planet.png');
         this.load.image('block', 'images/block.png');
         this.load.image('nextLevelTrigger', 'images/next-level.png');
+        this.load.image('spikes', 'images/spikes.png');
     },
 
     create() {
@@ -24,5 +25,6 @@ const playState = {
         game.player.update();
         for (const block of game.levelObjects.blocks) block.update();
         for (const trigger of game.levelObjects.nextLevelTriggers) trigger.update();
+        for (const spike of game.levelObjects.spikes) spike.update();
     }
 };

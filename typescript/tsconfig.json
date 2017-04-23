@@ -15,6 +15,7 @@
         "Block.ts",
         "Controls.ts",
         "Player.ts",
-        "NextLevelTrigger.ts"
+        "NextLevelTrigger.ts",
+        "Spikes.ts"
     ]
 }

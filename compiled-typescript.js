@@ -16,6 +16,9 @@ var levels = [
         ],
         nextLevelTriggers: [
             [200, 0]
+        ],
+        spikes: [
+            [0, 0, 200]
         ]
     },
     {
@@ -24,7 +27,8 @@ var levels = [
         ],
         nextLevelTriggers: [
             [200, 0]
-        ]
+        ],
+        spikes: []
     }
 ];
 var startScreenState = {
@@ -43,6 +47,7 @@ var playState = {
         this.load.image('planet', 'images/planet.png');
         this.load.image('block', 'images/block.png');
         this.load.image('nextLevelTrigger', 'images/next-level.png');
+        this.load.image('spikes', 'images/spikes.png');
     },
     create: function () {
         this.add.sprite(game.width / 2, game.height / 2, 'planet').anchor.setTo(.5, .5);
@@ -63,6 +68,10 @@ var playState = {
         for (var _b = 0, _c = game.levelObjects.nextLevelTriggers; _b < _c.length; _b++) {
             var trigger = _c[_b];
             trigger.update();
+        }
+        for (var _d = 0, _e = game.levelObjects.spikes; _d < _e.length; _d++) {
+            var spike = _e[_d];
+            spike.update();
         }
     }
 };
@@ -113,7 +122,7 @@ var Game = (function () {
         this.planetTop = { x: this.width / 2, y: this.height / 2 - this.planetRadius };
         this.phaser = new Phaser.Game(this.width, this.height);
         this.physicsWorld = new p2.World({ gravity: [0, 1000] });
-        this.levelObjects = { blocks: [], nextLevelTriggers: [] };
+        this.levelObjects = { blocks: [], nextLevelTriggers: [], spikes: [] };
         this.phaser.state.add('startScreen', startScreenState);
         this.phaser.state.add('play', playState);
         this.phaser.state.add('finished', finishedState);
@@ -139,6 +148,10 @@ var Game = (function () {
         for (var _d = 0, _e = levels[number].nextLevelTriggers; _d < _e.length; _d++) {
             var trigger = _e[_d];
             this.levelObjects.nextLevelTriggers.push(new NextLevelTrigger(trigger[0], trigger[1]));
+        }
+        for (var _f = 0, _g = levels[number].spikes; _f < _g.length; _f++) {
+            var spike = _g[_f];
+            this.levelObjects.spikes.push(new Spikes(spike[0], spike[1], spike[2]));
         }
     };
     Game.prototype.loadNextLevel = function () {
@@ -228,4 +241,28 @@ var NextLevelTrigger = (function (_super) {
             game.loadNextLevel();
     };
     return NextLevelTrigger;
+}(Orbital));
+var Spikes = (function (_super) {
+    __extends(Spikes, _super);
+    function Spikes(rotation, outwardDistance, width) {
+        var _this = _super.call(this, rotation, outwardDistance + 8) || this;
+        var height = 16;
+        _this.body = new p2.Body({
+            position: [_this.body.position[0], _this.body.position[1]]
+        });
+        _this.body.addShape(new p2.Box({ width: width, height: height }));
+        _this.body.angle = rotation;
+        game.physicsWorld.addBody(_this.body);
+        _this.sprite = game.phaser.add.tileSprite(_this.body.position[0], _this.body.position[1], width, height, 'spikes');
+        _this.sprite.rotation = rotation;
+        _this.sprite.anchor.set(.5, .5);
+        return _this;
+    }
+    Spikes.prototype.update = function () {
+        this.setRotation(this.body.angle + .01);
+        this.sprite.position = { x: this.body.position[0], y: this.body.position[1] };
+        this.sprite.rotation = this.body.angle;
+        //if (this.body.overlaps(game.player.body)) {}};
+    };
+    return Spikes;
 }(Orbital));

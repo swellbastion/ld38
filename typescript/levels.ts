@@ -7,6 +7,9 @@ const levels = [
         ],
         nextLevelTriggers: [
             [200, 0]
+        ],
+        spikes: [
+            [0, 0, 200]
         ]
     },
 
@@ -16,7 +19,8 @@ const levels = [
         ],
         nextLevelTriggers: [
             [200, 0]
-        ]
+        ],
+        spikes: []
     }
 
 ];
