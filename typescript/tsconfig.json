@@ -13,6 +13,7 @@
         "Game.ts",
         "Block.ts",
         "Controls.ts",
-        "Player.ts"
+        "Player.ts",
+        "NextLevelTrigger.ts"
     ]
 }

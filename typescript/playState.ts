@@ -4,6 +4,7 @@ const playState = {
         this.load.image('player', 'images/player.png');
         this.load.image('planet', 'images/planet.png');
         this.load.image('block', 'images/block.png');
+        this.load.image('nextLevelTrigger', 'images/next-level.png');
     },
 
     create() {
@@ -22,5 +23,6 @@ const playState = {
         game.physicsWorld.step(1/60);
         game.player.update();
         for (const block of game.levelObjects.blocks) block.update();
+        for (const trigger of game.levelObjects.nextLevelTriggers) trigger.update();
     }
 };

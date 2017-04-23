@@ -1,5 +1,6 @@
 class Orbital {
     body = {position: [], angle: 0};
+    sprite;
 
     constructor(rotation, public outwardDistance) {
         this.setRotation(rotation);
@@ -19,5 +20,10 @@ class Orbital {
             Math.cos(this.body.angle) * (x - centerX) - Math.sin(this.body.angle) * (y - centerY) + centerX,
             Math.sin(this.body.angle) * (x - centerX) + Math.cos(this.body.angle) * (y - centerY) + centerY
         ];
+    }
+
+    destroy() {
+        game.physicsWorld.removeBody(this.body);
+        this.sprite.destroy();
     }
 }

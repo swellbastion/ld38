@@ -13,6 +13,17 @@ var levels = [
         blocks: [
             [280, 0, 64],
             [50, 32, 32]
+        ],
+        nextLevelTriggers: [
+            [200, 0]
+        ]
+    },
+    {
+        blocks: [
+            [50, 32, 32]
+        ],
+        nextLevelTriggers: [
+            [200, 0]
         ]
     }
 ];
@@ -31,6 +42,7 @@ var playState = {
         this.load.image('player', 'images/player.png');
         this.load.image('planet', 'images/planet.png');
         this.load.image('block', 'images/block.png');
+        this.load.image('nextLevelTrigger', 'images/next-level.png');
     },
     create: function () {
         this.add.sprite(game.width / 2, game.height / 2, 'planet').anchor.setTo(.5, .5);
@@ -47,6 +59,10 @@ var playState = {
         for (var _i = 0, _a = game.levelObjects.blocks; _i < _a.length; _i++) {
             var block = _a[_i];
             block.update();
+        }
+        for (var _b = 0, _c = game.levelObjects.nextLevelTriggers; _b < _c.length; _b++) {
+            var trigger = _c[_b];
+            trigger.update();
         }
     }
 };
@@ -78,6 +94,10 @@ var Orbital = (function () {
             Math.sin(this.body.angle) * (x - centerX) + Math.cos(this.body.angle) * (y - centerY) + centerY
         ];
     };
+    Orbital.prototype.destroy = function () {
+        game.physicsWorld.removeBody(this.body);
+        this.sprite.destroy();
+    };
     return Orbital;
 }());
 var Game = (function () {
@@ -88,18 +108,31 @@ var Game = (function () {
         this.planetTop = { x: this.width / 2, y: this.height / 2 - this.planetRadius };
         this.phaser = new Phaser.Game(this.width, this.height);
         this.physicsWorld = new p2.World({ gravity: [0, 1000] });
-        this.levelObjects = { blocks: [], spikes: [] };
+        this.levelObjects = { blocks: [], nextLevelTriggers: [] };
         this.phaser.state.add('startScreen', startScreenState);
         this.phaser.state.add('play', playState);
         this.phaser.state.start('startScreen');
     }
     Game.prototype.loadLevel = function (number) {
-        for (var group in this.levelObjects)
+        this.currentLevelNumber = number;
+        for (var group in this.levelObjects) {
+            for (var _i = 0, _a = this.levelObjects[group]; _i < _a.length; _i++) {
+                var object = _a[_i];
+                object.destroy();
+            }
             this.levelObjects[group] = [];
-        for (var _i = 0, _a = levels[number].blocks; _i < _a.length; _i++) {
-            var blockData = _a[_i];
+        }
+        for (var _b = 0, _c = levels[number].blocks; _b < _c.length; _b++) {
+            var blockData = _c[_b];
             this.levelObjects.blocks.push(new Block(blockData[0] * Math.PI / 180, blockData[1], blockData[2]));
         }
+        for (var _d = 0, _e = levels[number].nextLevelTriggers; _d < _e.length; _d++) {
+            var trigger = _e[_d];
+            this.levelObjects.nextLevelTriggers.push(new NextLevelTrigger(trigger[0], trigger[1]));
+        }
+    };
+    Game.prototype.loadNextLevel = function () {
+        this.loadLevel(this.currentLevelNumber + 1);
     };
     return Game;
 }());
@@ -159,3 +192,30 @@ var Player = (function (_super) {
     };
     return Player;
 }(GameObject));
+var NextLevelTrigger = (function (_super) {
+    __extends(NextLevelTrigger, _super);
+    function NextLevelTrigger(rotation, outwardDistance) {
+        var _this = _super.call(this, rotation, outwardDistance + 16) || this;
+        var width = 32;
+        var height = 32;
+        _this.body = new p2.Body({
+            position: [_this.body.position[0], _this.body.position[1]],
+            collisionResponse: false
+        });
+        _this.body.addShape(new p2.Box({ width: width, height: height }));
+        _this.body.angle = rotation;
+        game.physicsWorld.addBody(_this.body);
+        _this.sprite = game.phaser.add.sprite(_this.body.position[0], _this.body.position[1], 'nextLevelTrigger');
+        _this.sprite.rotation = rotation;
+        _this.sprite.anchor.set(.5, .5);
+        return _this;
+    }
+    NextLevelTrigger.prototype.update = function () {
+        this.setRotation(this.body.angle + .01);
+        this.sprite.position = { x: this.body.position[0], y: this.body.position[1] };
+        this.sprite.rotation = this.body.angle;
+        if (this.body.overlaps(game.player.body))
+            game.loadNextLevel();
+    };
+    return NextLevelTrigger;
+}(Orbital));
