@@ -9,7 +9,9 @@
         "startScreenState.ts",
         "playState.ts",
         "GameObject.ts",
+        "Orbital.ts",
         "Block.ts",
-        "Game.ts"
+        "Game.ts",
+        "Player.ts"
     ]
 }

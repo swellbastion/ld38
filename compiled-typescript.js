@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
 var levels = [
     {
         blocks: [
-            [Math.PI * 2, 0, 0],
+            [0, 0, 0]
         ]
     }
 ];
@@ -33,34 +33,43 @@ var playState = {
     },
     create: function () {
         this.add.sprite(game.width / 2, game.height / 2, 'planet').anchor.setTo(.5, .5);
-        this.add.sprite(game.width / 2, game.height / 2 - 166, 'player').anchor.setTo(.5, .5);
+        game.player = new Player;
         game.loadLevel(0);
     },
     update: function () {
-        for (var _i = 0, _a = game.levelObjects.blocks; _i < _a.length; _i++) {
-            var block = _a[_i];
-            block.update();
-        }
+        game.physicsWorld.step(1 / 60);
+        game.player.update();
     }
 };
 var GameObject = (function () {
-    function GameObject(rotation, outwardDistance) {
+    function GameObject() {
+    }
+    GameObject.prototype.positionObjectToArray = function () {
+        return [this.position.x, this.position.y];
+    };
+    GameObject.prototype.positionFromPhysics = function () {
+        return { x: this.body.position[0], y: this.body.position[1] };
+    };
+    return GameObject;
+}());
+var Orbital = (function () {
+    function Orbital(rotation, outwardDistance) {
         this.rotation = rotation;
         this.outwardDistance = outwardDistance;
         this.setRotation(this.rotation);
     }
-    GameObject.prototype.setRotation = function (rotation) {
+    Orbital.prototype.setRotation = function (rotation) {
         this.rotation = rotation;
         this.setPostionFromRotation();
     };
-    GameObject.prototype.setPostionFromRotation = function () {
+    Orbital.prototype.setPostionFromRotation = function () {
         var x = game.width / 2, y = game.planetTop.y - this.outwardDistance, centerX = game.width / 2, centerY = game.height / 2;
         this.position = {
             x: Math.cos(this.rotation) * (x - centerX) - Math.sin(this.rotation) * (y - centerY) + centerX,
             y: Math.sin(this.rotation) * (x - centerX) + Math.cos(this.rotation) * (y - centerY) + centerY
         };
     };
-    return GameObject;
+    return Orbital;
 }());
 var Block = (function (_super) {
     __extends(Block, _super);
@@ -72,11 +81,9 @@ var Block = (function (_super) {
         return _this;
     }
     Block.prototype.update = function () {
-        this.setRotation(this.rotation + .1);
-        this.sprite.position = this.position;
     };
     return Block;
-}(GameObject));
+}(Orbital));
 var Game = (function () {
     function Game() {
         this.width = 640;
@@ -84,6 +91,7 @@ var Game = (function () {
         this.planetRadius = 150;
         this.planetTop = { x: this.width / 2, y: this.height / 2 - this.planetRadius };
         this.phaser = new Phaser.Game(this.width, this.height);
+        this.physicsWorld = new p2.World({ gravity: [0, 300] });
         this.levelObjects = { blocks: [], spikes: [] };
         this.phaser.state.add('startScreen', startScreenState);
         this.phaser.state.add('play', playState);
@@ -100,3 +108,20 @@ var Game = (function () {
     return Game;
 }());
 var game = new Game;
+var Player = (function (_super) {
+    __extends(Player, _super);
+    function Player() {
+        var _this = _super.call(this) || this;
+        _this.height = 32;
+        _this.position = { x: game.planetTop.x, y: game.planetTop.y - _this.height / 2 };
+        _this.body = new p2.Body({ mass: 5, position: _this.positionObjectToArray() });
+        _this.sprite = game.phaser.add.sprite(_this.position.x, _this.position.y, 'player');
+        _this.sprite.anchor.set(.5, .5);
+        game.physicsWorld.addBody(_this.body);
+        return _this;
+    }
+    Player.prototype.update = function () {
+        this.sprite.position = this.position = this.positionFromPhysics();
+    };
+    return Player;
+}(GameObject));

@@ -1,4 +1,4 @@
-class Block extends GameObject {
+class Block extends Orbital {
     sprite;
 
     constructor(rotation, outwardDistance, public width) {
@@ -8,7 +8,6 @@ class Block extends GameObject {
     }
 
     update() {
-        this.setRotation(this.rotation + .1);
-        this.sprite.position = this.position;
+        
     }
 }

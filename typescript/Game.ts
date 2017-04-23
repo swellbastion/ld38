@@ -4,7 +4,9 @@ class Game {
     planetRadius = 150;
     planetTop = {x: this.width / 2, y: this.height / 2 - this.planetRadius};
     phaser = new Phaser.Game(this.width, this.height);
+    physicsWorld = new p2.World({gravity: [0, 300]});
     levelObjects = {blocks: [], spikes: []};
+    player;
 
     constructor() {
         this.phaser.state.add('startScreen', startScreenState);
