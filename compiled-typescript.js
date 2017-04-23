@@ -35,6 +35,9 @@ var playState = {
     create: function () {
         this.add.sprite(game.width / 2, game.height / 2, 'planet').anchor.setTo(.5, .5);
         game.player = new Player;
+        var planetSurfaceBody = new p2.Body({ position: [game.width / 2 - 1, game.planetTop.y + 4] });
+        planetSurfaceBody.addShape(new p2.Box({ width: 2, height: 8 }));
+        game.physicsWorld.addBody(planetSurfaceBody);
         game.loadLevel(0);
         game.controls = new Controls;
     },
@@ -84,7 +87,7 @@ var Game = (function () {
         this.planetRadius = 150;
         this.planetTop = { x: this.width / 2, y: this.height / 2 - this.planetRadius };
         this.phaser = new Phaser.Game(this.width, this.height);
-        this.physicsWorld = new p2.World({ gravity: [0, 300] });
+        this.physicsWorld = new p2.World({ gravity: [0, 1000] });
         this.levelObjects = { blocks: [], spikes: [] };
         this.phaser.state.add('startScreen', startScreenState);
         this.phaser.state.add('play', playState);
@@ -139,7 +142,8 @@ var Player = (function (_super) {
         _this.body = new p2.Body({
             mass: 5,
             position: [game.planetTop.x, game.planetTop.y - height / 2],
-            fixedX: true
+            fixedX: true,
+            fixedRotation: true
         });
         _this.sprite = game.phaser.add.sprite(_this.body.position.x, _this.body.position.y, 'player');
         _this.sprite.anchor.set(.5, .5);
@@ -148,13 +152,10 @@ var Player = (function (_super) {
         return _this;
     }
     Player.prototype.update = function () {
-        var lowestAllowedYPosition = game.planetTop.y - this.body.shapes[0].height / 2;
-        if (this.body.position[1] > lowestAllowedYPosition)
-            this.body.position[1] = lowestAllowedYPosition;
         this.sprite.position = this.positionFromPhysics();
     };
     Player.prototype.jump = function () {
-        this.body.applyForce([0, -100000]);
+        this.body.applyImpulse([0, -2000]);
     };
     return Player;
 }(GameObject));
