@@ -11,7 +11,8 @@ var __extends = (this && this.__extends) || (function () {
 var levels = [
     {
         blocks: [
-            [0, 0, 0]
+            [280, 0, 64],
+            [50, 32, 32]
         ]
     }
 ];
@@ -60,7 +61,7 @@ var Orbital = (function () {
         this.setRotation(this.rotation);
     }
     Orbital.prototype.setRotation = function (rotation) {
-        this.rotation = rotation;
+        this.rotation = rotation * Math.PI / 180;
         this.setPostionFromRotation();
     };
     Orbital.prototype.setPostionFromRotation = function () {
@@ -75,9 +76,10 @@ var Orbital = (function () {
 var Block = (function (_super) {
     __extends(Block, _super);
     function Block(rotation, outwardDistance, width) {
-        var _this = _super.call(this, rotation, outwardDistance) || this;
-        _this.width = width;
+        var _this = _super.call(this, rotation, outwardDistance + 8) || this;
         _this.sprite = game.phaser.add.sprite(_this.position.x, _this.position.y, 'block');
+        _this.sprite.width = width;
+        _this.sprite.angle = rotation;
         _this.sprite.anchor.set(.5, .5);
         return _this;
     }

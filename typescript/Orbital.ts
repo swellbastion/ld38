@@ -6,7 +6,7 @@ class Orbital {
     }
 
     setRotation(rotation) {
-        this.rotation = rotation;
+        this.rotation = rotation * Math.PI / 180;
         this.setPostionFromRotation();
     }
 
