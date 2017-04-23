@@ -66,6 +66,11 @@ var playState = {
         }
     }
 };
+var finishedState = {
+    create: function () {
+        this.add.text(0, 0, 'nice going you finished the game', { fill: 'white' });
+    }
+};
 var GameObject = (function () {
     function GameObject() {
     }
@@ -111,9 +116,14 @@ var Game = (function () {
         this.levelObjects = { blocks: [], nextLevelTriggers: [] };
         this.phaser.state.add('startScreen', startScreenState);
         this.phaser.state.add('play', playState);
+        this.phaser.state.add('finished', finishedState);
         this.phaser.state.start('startScreen');
     }
     Game.prototype.loadLevel = function (number) {
+        if (!levels[number]) {
+            this.phaser.state.start('finished');
+            return;
+        }
         this.currentLevelNumber = number;
         for (var group in this.levelObjects) {
             for (var _i = 0, _a = this.levelObjects[group]; _i < _a.length; _i++) {

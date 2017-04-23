@@ -8,6 +8,7 @@
         "levels.ts",
         "startScreenState.ts",
         "playState.ts",
+        "finishedState.ts",
         "GameObject.ts",
         "Orbital.ts",
         "Game.ts",

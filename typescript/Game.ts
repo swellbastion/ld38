@@ -13,10 +13,15 @@ class Game {
     constructor() {
         this.phaser.state.add('startScreen', startScreenState);
         this.phaser.state.add('play', playState);
+        this.phaser.state.add('finished', finishedState);
         this.phaser.state.start('startScreen');
     }
 
     loadLevel(number) {
+        if (!levels[number]) {
+            this.phaser.state.start('finished');
+            return;
+        }
         this.currentLevelNumber = number;
         for (const group in this.levelObjects) {
             for (const object of this.levelObjects[group]) object.destroy();

@@ -6,4 +6,4 @@ const startScreenState = {
             this.state.start('play');
         }
     }
-}
+};
