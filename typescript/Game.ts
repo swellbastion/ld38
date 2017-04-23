@@ -7,6 +7,7 @@ class Game {
     physicsWorld = new p2.World({gravity: [0, 300]});
     levelObjects = {blocks: [], spikes: []};
     player;
+    controls;
 
     constructor() {
         this.phaser.state.add('startScreen', startScreenState);

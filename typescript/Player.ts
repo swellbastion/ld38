@@ -1,17 +1,31 @@
 class Player extends GameObject {
-    height = 32;
-    position = {x: game.planetTop.x, y: game.planetTop.y - this.height / 2};
     sprite;
-    body = new p2.Body({mass: 5, position: this.positionObjectToArray()});
+    body;
 
     constructor() {
         super();
-        this.sprite = game.phaser.add.sprite(this.position.x, this.position.y, 'player');
+
+        const height = 32;
+        const width = 32;
+
+        this.body = new p2.Body({
+            mass: 5, 
+            position: [game.planetTop.x, game.planetTop.y - height / 2]
+        });
+        this.sprite = game.phaser.add.sprite(this.body.position.x, this.body.position.y, 'player');
         this.sprite.anchor.set(.5, .5);
+        this.body.addShape(new p2.Box({width: width, height: height}))
         game.physicsWorld.addBody(this.body);
     }
 
     update() {
-        this.sprite.position = this.position = this.positionFromPhysics();
+        const lowestAllowedYPosition = game.planetTop.y - this.body.shapes[0].height / 2;
+        if (this.body.position[1] > lowestAllowedYPosition) 
+            this.body.position[1] = lowestAllowedYPosition;
+        this.sprite.position = this.positionFromPhysics();
+    }
+
+    jump() {
+        this.body.applyForce([0, -100000]);
     }
 }

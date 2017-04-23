@@ -12,6 +12,7 @@
         "Orbital.ts",
         "Block.ts",
         "Game.ts",
+        "Controls.ts",
         "Player.ts"
     ]
 }

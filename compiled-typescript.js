@@ -35,6 +35,7 @@ var playState = {
         this.add.sprite(game.width / 2, game.height / 2, 'planet').anchor.setTo(.5, .5);
         game.player = new Player;
         game.loadLevel(0);
+        game.controls = new Controls;
     },
     update: function () {
         game.physicsWorld.step(1 / 60);
@@ -108,20 +109,37 @@ var Game = (function () {
     return Game;
 }());
 var game = new Game;
+var Controls = (function () {
+    function Controls() {
+        var spacebar = game.phaser.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        spacebar.onDown.add(game.player.jump, game.player);
+    }
+    return Controls;
+}());
 var Player = (function (_super) {
     __extends(Player, _super);
     function Player() {
         var _this = _super.call(this) || this;
-        _this.height = 32;
-        _this.position = { x: game.planetTop.x, y: game.planetTop.y - _this.height / 2 };
-        _this.body = new p2.Body({ mass: 5, position: _this.positionObjectToArray() });
-        _this.sprite = game.phaser.add.sprite(_this.position.x, _this.position.y, 'player');
+        var height = 32;
+        var width = 32;
+        _this.body = new p2.Body({
+            mass: 5,
+            position: [game.planetTop.x, game.planetTop.y - height / 2]
+        });
+        _this.sprite = game.phaser.add.sprite(_this.body.position.x, _this.body.position.y, 'player');
         _this.sprite.anchor.set(.5, .5);
+        _this.body.addShape(new p2.Box({ width: width, height: height }));
         game.physicsWorld.addBody(_this.body);
         return _this;
     }
     Player.prototype.update = function () {
-        this.sprite.position = this.position = this.positionFromPhysics();
+        var lowestAllowedYPosition = game.planetTop.y - this.body.shapes[0].height / 2;
+        if (this.body.position[1] > lowestAllowedYPosition)
+            this.body.position[1] = lowestAllowedYPosition;
+        this.sprite.position = this.positionFromPhysics();
+    };
+    Player.prototype.jump = function () {
+        this.body.applyForce([0, -100000]);
     };
     return Player;
 }(GameObject));

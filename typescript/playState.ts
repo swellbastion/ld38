@@ -10,6 +10,7 @@ const playState = {
         this.add.sprite(game.width / 2, game.height / 2, 'planet').anchor.setTo(.5, .5);
         game.player = new Player;
         game.loadLevel(0);
+        game.controls = new Controls;
     },
 
     update() {
