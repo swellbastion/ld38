@@ -8,7 +8,7 @@ class Block extends GameObject {
     }
 
     update() {
-        this.setRotation(Math.PI/2);
+        this.setRotation(this.rotation + .1);
         this.sprite.position = this.position;
     }
 }

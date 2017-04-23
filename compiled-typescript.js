@@ -72,7 +72,7 @@ var Block = (function (_super) {
         return _this;
     }
     Block.prototype.update = function () {
-        this.setRotation(Math.PI / 2);
+        this.setRotation(this.rotation + .1);
         this.sprite.position = this.position;
     };
     return Block;
