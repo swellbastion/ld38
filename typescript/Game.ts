@@ -19,7 +19,11 @@ class Game {
         for (const group in this.levelObjects) this.levelObjects[group] = [];
         for (const blockData of levels[number].blocks) 
             this.levelObjects.blocks.push(
-                new Block(blockData[0], blockData[1], blockData[2])
+                new Block(
+                    blockData[0] * Math.PI / 180,
+                    blockData[1], 
+                    blockData[2]
+                )
             );
     }
 }

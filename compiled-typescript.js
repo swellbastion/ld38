@@ -61,7 +61,7 @@ var Orbital = (function () {
         this.setRotation(this.rotation);
     }
     Orbital.prototype.setRotation = function (rotation) {
-        this.rotation = rotation * Math.PI / 180;
+        this.rotation = rotation;
         this.setPostionFromRotation();
     };
     Orbital.prototype.setPostionFromRotation = function () {
@@ -77,9 +77,14 @@ var Block = (function (_super) {
     __extends(Block, _super);
     function Block(rotation, outwardDistance, width) {
         var _this = _super.call(this, rotation, outwardDistance + 8) || this;
-        _this.sprite = game.phaser.add.sprite(_this.position.x, _this.position.y, 'block');
-        _this.sprite.width = width;
-        _this.sprite.angle = rotation;
+        var height = 16;
+        _this.body = new p2.Body({ position: [_this.position.x, _this.position.y] });
+        _this.body.addShape(new p2.Box({ width: width, height: height }));
+        _this.body.angle = rotation;
+        game.physicsWorld.addBody(_this.body);
+        _this.sprite = game.phaser.add.sprite(_this.body.position[0], _this.body.position[1], 'block');
+        _this.sprite.width = _this.body.shapes[0].width;
+        _this.sprite.rotation = rotation;
         _this.sprite.anchor.set(.5, .5);
         return _this;
     }
@@ -105,7 +110,7 @@ var Game = (function () {
             this.levelObjects[group] = [];
         for (var _i = 0, _a = levels[number].blocks; _i < _a.length; _i++) {
             var blockData = _a[_i];
-            this.levelObjects.blocks.push(new Block(blockData[0], blockData[1], blockData[2]));
+            this.levelObjects.blocks.push(new Block(blockData[0] * Math.PI / 180, blockData[1], blockData[2]));
         }
     };
     return Game;

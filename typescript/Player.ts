@@ -14,7 +14,7 @@ class Player extends GameObject {
         });
         this.sprite = game.phaser.add.sprite(this.body.position.x, this.body.position.y, 'player');
         this.sprite.anchor.set(.5, .5);
-        this.body.addShape(new p2.Box({width: width, height: height}))
+        this.body.addShape(new p2.Box({width: width, height: height}));
         game.physicsWorld.addBody(this.body);
     }
 
