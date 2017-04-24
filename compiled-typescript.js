@@ -18,7 +18,7 @@ var levels = [
             [200, 0]
         ],
         spikes: [
-            [0, 0, 200]
+            [180, 0, 200]
         ]
     },
     {
@@ -48,13 +48,17 @@ var playState = {
         this.load.image('block', 'images/block.png');
         this.load.image('nextLevelTrigger', 'images/next-level.png');
         this.load.image('spikes', 'images/spikes.png');
+        this.load.image('gameOver', 'images/game-over.png');
     },
     create: function () {
         this.add.sprite(game.width / 2, game.height / 2, 'planet').anchor.setTo(.5, .5);
         game.player = new Player;
-        var planetSurfaceBody = new p2.Body({ position: [game.width / 2 - 1, game.planetTop.y + 4] });
-        planetSurfaceBody.addShape(new p2.Box({ width: 2, height: 8 }));
-        game.physicsWorld.addBody(planetSurfaceBody);
+        game.gameOverSign = this.add.sprite(game.width / 2, game.height / 2, 'gameOver');
+        game.gameOverSign.anchor.setTo(.5, .5);
+        game.gameOverSign.visible = false;
+        game.planetSurfaceBody = new p2.Body({ position: [game.width / 2 - 1, game.planetTop.y + 4] });
+        game.planetSurfaceBody.addShape(new p2.Box({ width: 2, height: 8 }));
+        game.physicsWorld.addBody(game.planetSurfaceBody);
         game.loadLevel(0);
         game.controls = new Controls;
     },
@@ -153,6 +157,10 @@ var Game = (function () {
             var spike = _g[_f];
             this.levelObjects.spikes.push(new Spikes(spike[0], spike[1], spike[2]));
         }
+        this.player.body.position = [
+            this.planetTop.x,
+            this.planetTop.y - this.player.body.shapes[0].height / 2
+        ];
     };
     Game.prototype.loadNextLevel = function () {
         this.loadLevel(this.currentLevelNumber + 1);
@@ -213,6 +221,16 @@ var Player = (function (_super) {
     Player.prototype.jump = function () {
         this.body.applyImpulse([0, -2000]);
     };
+    Player.prototype.die = function () {
+        var _this = this;
+        game.gameOverSign.visible = true;
+        this.body.collisionResponse = false;
+        game.phaser.time.events.add(1000, function () {
+            game.gameOverSign.visible = false;
+            _this.body.collisionResponse = true;
+            game.loadLevel(game.currentLevelNumber);
+        });
+    };
     return Player;
 }(GameObject));
 var NextLevelTrigger = (function (_super) {
@@ -248,7 +266,8 @@ var Spikes = (function (_super) {
         var _this = _super.call(this, rotation, outwardDistance + 8) || this;
         var height = 16;
         _this.body = new p2.Body({
-            position: [_this.body.position[0], _this.body.position[1]]
+            position: [_this.body.position[0], _this.body.position[1]],
+            collisionResponse: false
         });
         _this.body.addShape(new p2.Box({ width: width, height: height }));
         _this.body.angle = rotation;
@@ -262,7 +281,8 @@ var Spikes = (function (_super) {
         this.setRotation(this.body.angle + .01);
         this.sprite.position = { x: this.body.position[0], y: this.body.position[1] };
         this.sprite.rotation = this.body.angle;
-        //if (this.body.overlaps(game.player.body)) {}};
+        if (this.body.overlaps(game.player.body))
+            game.player.die();
     };
     return Spikes;
 }(Orbital));

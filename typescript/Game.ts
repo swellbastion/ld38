@@ -9,6 +9,8 @@ class Game {
     player;
     controls;
     currentLevelNumber;
+    gameOverSign;
+    planetSurfaceBody;
 
     constructor() {
         this.phaser.state.add('startScreen', startScreenState);
@@ -43,6 +45,11 @@ class Game {
             this.levelObjects.spikes.push(
                 new Spikes(spike[0], spike[1], spike[2])
             );
+            
+        this.player.body.position = [
+            this.planetTop.x, 
+            this.planetTop.y - this.player.body.shapes[0].height / 2
+        ];
     }
 
     loadNextLevel() {

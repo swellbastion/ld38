@@ -27,4 +27,14 @@ class Player extends GameObject {
     jump() {
         this.body.applyImpulse([0, -2000]);
     }
+
+    die() {
+        game.gameOverSign.visible = true;
+        this.body.collisionResponse = false;
+        game.phaser.time.events.add(1000, () => {
+            game.gameOverSign.visible = false;
+            this.body.collisionResponse = true;
+            game.loadLevel(game.currentLevelNumber);
+        });
+    }
 }
