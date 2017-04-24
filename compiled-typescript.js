@@ -11,19 +11,75 @@ var __extends = (this && this.__extends) || (function () {
 var levels = [
     {
         blocks: [
-            [280, 0, 64],
-            [50, 32, 32]
+            [256, 30, 30]
+        ],
+        nextLevelTriggers: [],
+        spikes: [
+            [270, 0, 32]
+        ]
+    },
+    {
+        blocks: [
+            [165, 50, 50],
+            [195, 50, 50],
+            [165, 100, 50],
+            [195, 100, 50]
+        ],
+        nextLevelTriggers: [
+            [180, 0]
+        ],
+        spikes: []
+    },
+    {
+        blocks: [
+            [290, 50, 50]
         ],
         nextLevelTriggers: [],
         spikes: []
     },
     {
-        blocks: [
-            [50, 32, 32]
-        ],
-        nextLevelTriggers: [
-            [200, 0]
-        ],
+        blocks: [],
+        nextLevelTriggers: [],
+        spikes: []
+    },
+    {
+        blocks: [],
+        nextLevelTriggers: [],
+        spikes: []
+    },
+    {
+        blocks: [],
+        nextLevelTriggers: [],
+        spikes: []
+    },
+    {
+        blocks: [],
+        nextLevelTriggers: [],
+        spikes: []
+    },
+    {
+        blocks: [],
+        nextLevelTriggers: [],
+        spikes: []
+    },
+    {
+        blocks: [],
+        nextLevelTriggers: [],
+        spikes: []
+    },
+    {
+        blocks: [],
+        nextLevelTriggers: [],
+        spikes: []
+    },
+    {
+        blocks: [],
+        nextLevelTriggers: [],
+        spikes: []
+    },
+    {
+        blocks: [],
+        nextLevelTriggers: [],
         spikes: []
     }
 ];
@@ -47,7 +103,7 @@ var playState = {
         this.load.image('gameOver', 'images/game-over.png');
     },
     create: function () {
-        game.physicsWorld = new p2.World({ gravity: [0, 1000] });
+        game.physicsWorld = new p2.World({ gravity: [0, 900] });
         this.add.sprite(game.width / 2, game.height / 2, 'planet').anchor.setTo(.5, .5);
         game.planetSurfaceBody = new p2.Body({ position: [game.width / 2 - 1, game.planetTop.y + 4] });
         game.planetSurfaceBody.addShape(new p2.Box({ width: 2, height: 8 }));
@@ -149,11 +205,11 @@ var Game = (function () {
         }
         for (var _d = 0, _e = levels[number].nextLevelTriggers; _d < _e.length; _d++) {
             var trigger = _e[_d];
-            this.levelObjects.nextLevelTriggers.push(new NextLevelTrigger(trigger[0], trigger[1]));
+            this.levelObjects.nextLevelTriggers.push(new NextLevelTrigger(trigger[0] * Math.PI / 180, trigger[1]));
         }
         for (var _f = 0, _g = levels[number].spikes; _f < _g.length; _f++) {
             var spike = _g[_f];
-            this.levelObjects.spikes.push(new Spikes(spike[0], spike[1], spike[2]));
+            this.levelObjects.spikes.push(new Spikes(spike[0] * Math.PI / 180, spike[1], spike[2]));
         }
         this.player.body.position = [
             this.planetTop.x,
@@ -226,13 +282,13 @@ var Player = (function (_super) {
         }
     };
     Player.prototype.die = function () {
-        var _this = this;
         game.gameOverSign.visible = true;
         this.body.collisionResponse = false;
         game.phaser.time.events.add(1000, function () {
-            game.gameOverSign.visible = false;
-            _this.body.collisionResponse = true;
-            game.loadLevel(game.currentLevelNumber);
+            // game.gameOverSign.visible = false;
+            // this.body.collisionResponse = true;
+            // game.loadLevel(0);
+            game.phaser.state.start('startScreen');
         });
     };
     return Player;

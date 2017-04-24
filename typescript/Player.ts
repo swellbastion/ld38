@@ -36,9 +36,10 @@ class Player extends GameObject {
         game.gameOverSign.visible = true;
         this.body.collisionResponse = false;
         game.phaser.time.events.add(1000, () => {
-            game.gameOverSign.visible = false;
-            this.body.collisionResponse = true;
-            game.loadLevel(game.currentLevelNumber);
+            // game.gameOverSign.visible = false;
+            // this.body.collisionResponse = true;
+            // game.loadLevel(0);
+            game.phaser.state.start('startScreen')
         });
     }
 }

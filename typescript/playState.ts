@@ -10,7 +10,7 @@ const playState = {
     },
 
     create() {
-        game.physicsWorld = new p2.World({gravity: [0, 1000]});
+        game.physicsWorld = new p2.World({gravity: [0, 900]});
         this.add.sprite(game.width / 2, game.height / 2, 'planet').anchor.setTo(.5, .5);
 
         game.planetSurfaceBody = new p2.Body({position: [game.width / 2 - 1, game.planetTop.y + 4]})

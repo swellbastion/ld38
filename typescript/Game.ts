@@ -39,11 +39,11 @@ class Game {
             );
         for (const trigger of levels[number].nextLevelTriggers) 
             this.levelObjects.nextLevelTriggers.push(
-                new NextLevelTrigger(trigger[0], trigger[1])
+                new NextLevelTrigger(trigger[0] * Math.PI / 180, trigger[1])
             );
         for (const spike of levels[number].spikes) 
             this.levelObjects.spikes.push(
-                new Spikes(spike[0], spike[1], spike[2])
+                new Spikes(spike[0] * Math.PI / 180, spike[1], spike[2])
             );
             
         this.player.body.position = [

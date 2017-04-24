@@ -2,8 +2,44 @@ const levels = [
 
     {
         blocks: [
-            [280, 0, 64],
-            [50, 32, 32]
+            [256, 30, 30]
+        ],
+        nextLevelTriggers: [
+            
+        ],
+        spikes: [
+            [270, 0, 32]
+        ]
+    },
+
+    {
+        blocks: [
+            [165, 50 , 50],
+            [195, 50, 50],
+            [165, 100 , 50],
+            [195, 100, 50]
+        ],
+        nextLevelTriggers: [
+            [180, 0]
+        ],
+        spikes: []
+    },
+
+    {
+        blocks: [
+            [290, 50, 50]
+        ],
+        nextLevelTriggers: [
+            
+        ],
+        spikes: [
+            
+        ]
+    },
+    
+    {
+        blocks: [
+            
         ],
         nextLevelTriggers: [
             
@@ -15,12 +51,98 @@ const levels = [
 
     {
         blocks: [
-            [50, 32, 32]
+            
         ],
         nextLevelTriggers: [
-            [200, 0]
+            
         ],
-        spikes: []
+        spikes: [
+            
+        ]
+    },
+
+    {
+        blocks: [
+            
+        ],
+        nextLevelTriggers: [
+            
+        ],
+        spikes: [
+            
+        ]
+    },
+
+    {
+        blocks: [
+            
+        ],
+        nextLevelTriggers: [
+            
+        ],
+        spikes: [
+            
+        ]
+    },
+
+    {
+        blocks: [
+            
+        ],
+        nextLevelTriggers: [
+            
+        ],
+        spikes: [
+            
+        ]
+    },
+
+    {
+        blocks: [
+            
+        ],
+        nextLevelTriggers: [
+            
+        ],
+        spikes: [
+            
+        ]
+    },
+
+    {
+        blocks: [
+            
+        ],
+        nextLevelTriggers: [
+            
+        ],
+        spikes: [
+            
+        ]
+    },
+
+    {
+        blocks: [
+            
+        ],
+        nextLevelTriggers: [
+            
+        ],
+        spikes: [
+            
+        ]
+    },
+
+    {
+        blocks: [
+            
+        ],
+        nextLevelTriggers: [
+            
+        ],
+        spikes: [
+            
+        ]
     }
 
 ];
