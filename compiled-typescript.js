@@ -14,12 +14,8 @@ var levels = [
             [280, 0, 64],
             [50, 32, 32]
         ],
-        nextLevelTriggers: [
-            [200, 0]
-        ],
-        spikes: [
-            [180, 0, 200]
-        ]
+        nextLevelTriggers: [],
+        spikes: []
     },
     {
         blocks: [
@@ -53,13 +49,13 @@ var playState = {
     create: function () {
         game.physicsWorld = new p2.World({ gravity: [0, 1000] });
         this.add.sprite(game.width / 2, game.height / 2, 'planet').anchor.setTo(.5, .5);
+        game.planetSurfaceBody = new p2.Body({ position: [game.width / 2 - 1, game.planetTop.y + 4] });
+        game.planetSurfaceBody.addShape(new p2.Box({ width: 2, height: 8 }));
+        game.physicsWorld.addBody(game.planetSurfaceBody);
         game.player = new Player;
         game.gameOverSign = this.add.sprite(game.width / 2, game.height / 2, 'gameOver');
         game.gameOverSign.anchor.setTo(.5, .5);
         game.gameOverSign.visible = false;
-        game.planetSurfaceBody = new p2.Body({ position: [game.width / 2 - 1, game.planetTop.y + 4] });
-        game.planetSurfaceBody.addShape(new p2.Box({ width: 2, height: 8 }));
-        game.physicsWorld.addBody(game.planetSurfaceBody);
         game.loadLevel(0);
         game.controls = new Controls;
     },
@@ -221,7 +217,13 @@ var Player = (function (_super) {
         this.sprite.position = this.positionFromPhysics();
     };
     Player.prototype.jump = function () {
-        this.body.applyImpulse([0, -2000]);
+        for (var _i = 0, _a = game.levelObjects.blocks.concat({ body: game.planetSurfaceBody }); _i < _a.length; _i++) {
+            var thing = _a[_i];
+            if (this.body.overlaps(thing.body)) {
+                this.body.applyImpulse([0, -2000]);
+                break;
+            }
+        }
     };
     Player.prototype.die = function () {
         var _this = this;

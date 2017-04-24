@@ -25,7 +25,11 @@ class Player extends GameObject {
     }
   
     jump() {
-        this.body.applyImpulse([0, -2000]);
+        for (const thing of game.levelObjects.blocks.concat({body: game.planetSurfaceBody}))
+            if (this.body.overlaps(thing.body)) {
+                this.body.applyImpulse([0, -2000]);
+                break;
+            }
     }
 
     die() {

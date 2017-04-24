@@ -6,10 +6,10 @@ const levels = [
             [50, 32, 32]
         ],
         nextLevelTriggers: [
-            [200, 0]
+            
         ],
         spikes: [
-            [180, 0, 200]
+            
         ]
     },
 
