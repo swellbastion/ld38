@@ -51,6 +51,7 @@ var playState = {
         this.load.image('gameOver', 'images/game-over.png');
     },
     create: function () {
+        game.physicsWorld = new p2.World({ gravity: [0, 1000] });
         this.add.sprite(game.width / 2, game.height / 2, 'planet').anchor.setTo(.5, .5);
         game.player = new Player;
         game.gameOverSign = this.add.sprite(game.width / 2, game.height / 2, 'gameOver');
@@ -81,7 +82,9 @@ var playState = {
 };
 var finishedState = {
     create: function () {
+        var _this = this;
         this.add.text(0, 0, 'nice going you finished the game', { fill: 'white' });
+        game.phaser.time.events.add(2000, function () { return _this.state.start('startScreen'); });
     }
 };
 var GameObject = (function () {
@@ -125,7 +128,6 @@ var Game = (function () {
         this.planetRadius = 150;
         this.planetTop = { x: this.width / 2, y: this.height / 2 - this.planetRadius };
         this.phaser = new Phaser.Game(this.width, this.height);
-        this.physicsWorld = new p2.World({ gravity: [0, 1000] });
         this.levelObjects = { blocks: [], nextLevelTriggers: [], spikes: [] };
         this.phaser.state.add('startScreen', startScreenState);
         this.phaser.state.add('play', playState);

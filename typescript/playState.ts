@@ -10,6 +10,7 @@ const playState = {
     },
 
     create() {
+        game.physicsWorld = new p2.World({gravity: [0, 1000]});
         this.add.sprite(game.width / 2, game.height / 2, 'planet').anchor.setTo(.5, .5);
         game.player = new Player;
         game.gameOverSign = this.add.sprite(game.width / 2, game.height / 2, 'gameOver');

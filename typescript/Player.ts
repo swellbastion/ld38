@@ -23,7 +23,7 @@ class Player extends GameObject {
     update() {
         this.sprite.position = this.positionFromPhysics();
     }
-
+  
     jump() {
         this.body.applyImpulse([0, -2000]);
     }

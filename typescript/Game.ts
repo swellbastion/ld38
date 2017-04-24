@@ -4,7 +4,7 @@ class Game {
     planetRadius = 150;
     planetTop = {x: this.width / 2, y: this.height / 2 - this.planetRadius};
     phaser = new Phaser.Game(this.width, this.height);
-    physicsWorld = new p2.World({gravity: [0, 1000]});
+    physicsWorld;
     levelObjects = {blocks: [], nextLevelTriggers: [], spikes: []};
     player;
     controls;
