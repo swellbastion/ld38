@@ -11,6 +11,8 @@ class Game {
     currentLevelNumber;
     gameOverSign;
     planetSurfaceBody;
+    sounds: any = {};
+    soundsLoaded = false;
 
     constructor() {
         this.phaser.state.add('startScreen', startScreenState);

@@ -131,8 +131,15 @@ var playState = {
         this.load.image('nextLevelTrigger', 'images/next-level.png');
         this.load.image('spikes', 'images/spikes.png');
         this.load.image('gameOver', 'images/game-over.png');
+        this.load.audio('jump', 'sounds/jump.mp3');
+        this.load.audio('die', 'sounds/die.mp3');
+        this.load.audio('nextLevel', 'sounds/next-level.mp3');
     },
     create: function () {
+        game.sounds.jump = this.add.audio('jump');
+        game.sounds.die = this.add.audio('die');
+        game.sounds.nextLevel = this.add.audio('nextLevel');
+        this.sound.setDecodedCallback([game.sounds.jump, game.sounds.die, game.sounds.nextLevel], function () { return game.soundsLoaded = true; });
         game.physicsWorld = new p2.World({ gravity: [0, 900] });
         this.add.sprite(game.width / 2, game.height / 2, 'planet').anchor.setTo(.5, .5);
         game.planetSurfaceBody = new p2.Body({ position: [game.width / 2 - 1, game.planetTop.y + 4] });
@@ -211,6 +218,8 @@ var Game = (function () {
         this.planetTop = { x: this.width / 2, y: this.height / 2 - this.planetRadius };
         this.phaser = new Phaser.Game(this.width, this.height);
         this.levelObjects = { blocks: [], nextLevelTriggers: [], spikes: [] };
+        this.sounds = {};
+        this.soundsLoaded = false;
         this.phaser.state.add('startScreen', startScreenState);
         this.phaser.state.add('play', playState);
         this.phaser.state.add('finished', finishedState);
@@ -307,11 +316,15 @@ var Player = (function (_super) {
             var thing = _a[_i];
             if (this.body.overlaps(thing.body)) {
                 this.body.applyImpulse([0, -2000]);
+                if (game.soundsLoaded)
+                    game.sounds.jump.play();
                 break;
             }
         }
     };
     Player.prototype.die = function () {
+        if (game.soundsLoaded)
+            game.sounds.die.play();
         game.gameOverSign.visible = true;
         this.body.collisionResponse = false;
         game.phaser.time.events.add(1000, function () {
@@ -345,8 +358,11 @@ var NextLevelTrigger = (function (_super) {
         this.setRotation(this.body.angle + .01);
         this.sprite.position = { x: this.body.position[0], y: this.body.position[1] };
         this.sprite.rotation = this.body.angle;
-        if (this.body.overlaps(game.player.body))
+        if (this.body.overlaps(game.player.body)) {
+            if (game.soundsLoaded)
+                game.sounds.nextLevel.play();
             game.loadNextLevel();
+        }
     };
     return NextLevelTrigger;
 }(Orbital));

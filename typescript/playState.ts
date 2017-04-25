@@ -7,9 +7,19 @@ const playState = {
         this.load.image('nextLevelTrigger', 'images/next-level.png');
         this.load.image('spikes', 'images/spikes.png');
         this.load.image('gameOver', 'images/game-over.png');
+
+        this.load.audio('jump', 'sounds/jump.mp3');
+        this.load.audio('die', 'sounds/die.mp3');
+        this.load.audio('nextLevel', 'sounds/next-level.mp3');
     },
 
     create() {
+        game.sounds.jump = this.add.audio('jump');
+        game.sounds.die = this.add.audio('die');
+        game.sounds.nextLevel = this.add.audio('nextLevel');
+
+        this.sound.setDecodedCallback([ game.sounds.jump, game.sounds.die, game.sounds.nextLevel ], () => game.soundsLoaded = true)
+
         game.physicsWorld = new p2.World({gravity: [0, 900]});
         this.add.sprite(game.width / 2, game.height / 2, 'planet').anchor.setTo(.5, .5);
 

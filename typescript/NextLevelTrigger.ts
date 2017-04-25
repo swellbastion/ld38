@@ -27,6 +27,9 @@ class NextLevelTrigger extends Orbital {
         this.setRotation(this.body.angle + .01);
         this.sprite.position = {x: this.body.position[0], y: this.body.position[1]};
         this.sprite.rotation = this.body.angle;
-        if (this.body.overlaps(game.player.body)) game.loadNextLevel();
+        if (this.body.overlaps(game.player.body)) {
+            if (game.soundsLoaded) game.sounds.nextLevel.play();
+            game.loadNextLevel();
+        }
     }
 }

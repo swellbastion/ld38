@@ -28,11 +28,13 @@ class Player extends GameObject {
         for (const thing of game.levelObjects.blocks.concat({body: game.planetSurfaceBody}))
             if (this.body.overlaps(thing.body)) {
                 this.body.applyImpulse([0, -2000]);
+                if (game.soundsLoaded) game.sounds.jump.play();
                 break;
             }
     }
 
     die() {
+        if (game.soundsLoaded) game.sounds.die.play();
         game.gameOverSign.visible = true;
         this.body.collisionResponse = false;
         game.phaser.time.events.add(1000, () => {
